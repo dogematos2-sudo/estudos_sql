@@ -1,0 +1,38 @@
+SELECT country, tot_pop
+FROM population
+WHERE tot_pop > 0.2e9
+AND ref_year = 2023;
+
+SELECT country  , ref_year , co2_pc
+FROM co2_emissions_pc 
+WHERE ref_year BETWEEN 2019 AND 2021
+  AND country IN ("Brazil", "China", "USA");
+
+SELECT country, eight_regions 
+FROM country 
+WHERE wb4income = 'Lower middle income' 
+  AND eight_regions IN ('europe_east', 'europe_west');
+
+SELECT country , co2_pc , ref_year 
+FROM co2_emissions_pc
+WHERE ref_year BETWEEN 2019 AND 2021 
+AND country IN  ('Brazil' , 'China' , 'USA');
+
+SELECT country, eight_regions 
+FROM country 
+WHERE wb4income = 'Lower middle income' 
+  AND eight_regions IN ('europe_east', 'europe_west');
+
+SELECT country  , eight_regions , wb_regions
+FROM country
+WHERE eight_regions LIKE '%asia%';
+
+SELECT wb_regions
+FROM country
+WHERE wb_regions  LIKE  "%America%";
+
+SELECT country , gdp_pc , ref_year  
+FROM gdp_pc
+WHERE ref_year ("2009");
+ORDER BY gdp_pc ASC;
+
