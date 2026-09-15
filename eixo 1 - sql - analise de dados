@@ -36,3 +36,47 @@ FROM gdp_pc
 WHERE ref_year ("2009");
 ORDER BY gdp_pc ASC;
 
+SELECT my.country, my.mean_years , 'male' as gender
+FROM men_years_at_school my
+WHERE my.country IN  ('Brazil', 'Russia' , 'India' , 'China' , 'South Africa')
+AND my.ref_year =  2000
+UNION 
+SELECT wy.country, wy.mean_years , 'famale' as gender
+FROM women_years_at_school wy 
+WHERE wy.country IN ('Brazil', 'Russia' , 'India' , 'China' , 'South Africa')
+AND wy.ref_year =  2000
+
+
+SELECT cm.country 
+FROM child_mortality cm 
+EXCEPT 
+SELECT f.country  
+FROM fertility f 
+
+
+SELECT p.country 
+FROM population p 
+EXCEPT 
+SELECT cm.country 
+FROM child_mortality cm
+
+SELECT p.country
+FROM population p
+EXCEPT
+SELECT c.country
+FROM country c
+
+SELECT cep.country , cep.ref_year 
+FROM co2_emissions_pc cep 
+WHERE cep.ref_year >= 2000 AND cep.country = 'Brazil'
+EXCEPT 
+SELECT my.country , my.ref_year 
+FROM men_years_at_school my
+WHERE my.ref_year >= 2000 AND my.country = 'Brazil'
+
+SELECT cep.country , cep.ref_year, cep.co2_pc 
+FROM co2_emissions_pc cep 
+INTERSECT 
+SELECT my.country , my.ref_year , my.mean_years  
+FROM men_years_at_school my 
+
