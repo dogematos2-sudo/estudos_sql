@@ -78,7 +78,7 @@ SELECT cep.country , cep.ref_year, cep.co2_pc
 FROM co2_emissions_pc cep 
 INTERSECT 
 SELECT my.country , my.ref_year , my.mean_years  
-FROM men_years_at_school 
+FROM men_years_at_school
 
 SELECT MIN(le.tot_years) AS min_years , AVG(le.tot_years) AS avg_years , MAX(le.tot_years) AS max_years
 FROM life_expectancy le
