@@ -78,5 +78,152 @@ SELECT cep.country , cep.ref_year, cep.co2_pc
 FROM co2_emissions_pc cep 
 INTERSECT 
 SELECT my.country , my.ref_year , my.mean_years  
-FROM men_years_at_school my 
+FROM men_years_at_school 
+
+SELECT MIN(le.tot_years) AS min_years , AVG(le.tot_years) AS avg_years , MAX(le.tot_years) AS max_years
+FROM life_expectancy le
+JOIN country c ON le.country = c.country
+WHERE le.ref_year = 1990
+AND c.wb_regions = 'Latin America & Caribbean' 
+
+SELECT AVG() AS mean , 
+       MAX() AS range,
+FROM country c    
+
+SELECT "date" , 
+	"close" - "open" as "range", 
+	("close" + "open" ) / 2 as "mean"
+FROM petrobras
+WHERE "date" BETWEEN '2020-02-20' AND '2020-03-20'
+	AND "range" > 0;  
+
+SELECT DISTINCT m.country
+FROM men_years_at_school m
+JOIN women_years_at_school w ON m.country = w.country 
+	AND m.ref_year = w.ref_year
+JOIN country c ON m.country = c.country 
+WHERE c.four_regions = 'africa'
+	AND w.mean_years - m.mean_years <= 1
+	AND w.ref_year BETWEEN 2001 AND 2010
+	
+SELECT cm.ref_year, 
+	cm.tot_deaths, 
+	100 * cm.tot_deaths / 1000 AS percent_deaths
+FROM child_mortality cm
+WHERE cm.ref_year BETWEEN 1910 AND 2020
+	AND cm.ref_year %10 = 0
+	AND cm.country = 'Brazil'
+ORDER BY cm.ref_year;
+
+SELECT MIN(le.tot_years) AS MIN , AVG(le.tot_years) AS AVG , MAX(le.tot_years) AS MAX
+FROM life_expectancy le
+JOIN country c ON le.country = c.country 
+WHERE le.ref_year = 1990 
+AND c.wb_regions = 'Latin America & Caribbean'
+
+SELECT AVG(gp.gdp_pc) , AVG(ai.mean_usd)
+FROM gdp_pc gp 
+JOIN avg_income ai ON gp.country = ai.country
+AND gp.ref_year = ai.ref_year
+WHERE gp.ref_year = 2019;
+
+SELECT AVG (m.mean_years- w.mean_years) AS avg_diff
+FROM men_years_at_school m
+JOIN women_years_at_school w ON m.country = w.country 
+	AND m.ref_year = w.ref_year 
+WHERE w.ref_year = 2000;
+
+SELECT c.wb3income ,
+	MIN (ai.mean_usd) AS min_usd, 
+	AVG (ai.mean_usd) AS avg_usd, 
+	MAX (ai.mean_usd) AS max_usd
+FROM avg_income ai
+JOIN country c ON ai.country = c.country 
+WHERE ai.ref_year = 2020
+GROUP BY c.wb3income
+ORDER BY avg_usd DESC;
+
+SELECT c.eight_regions, 
+	le.ref_year, 
+	ROUND ( AVG(le.tot_years), 2) AS avg_years
+FROM life_expectancy le
+JOIN country c ON le.country = c.country 
+WHERE le.ref_year BETWEEN 2019 AND 2021
+GROUP BY c.eight_regions, 
+	le.ref_year
+ORDER BY c.eight_regions, 
+	le.ref_year;
+
+SELECT c.wb_regions, 
+	ROUND(SUM (p.tot_pop * cep.co2_pc) / 1E9, 2) AS tot_giga_co2
+FROM co2_emissions_pc cep
+JOIN country c ON cep.country = c.country 
+JOIN population p ON cep.country = p.country 
+	AND cep.ref_year = p.ref_year
+WHERE cep.ref_year = 2022 
+GROUP BY c.wb_regions
+ORDER BY tot_giga_co2 DESC;
+
+SELECT c.wb_regions, 
+	AVG(cm.tot_deaths) AS avg_deaths
+FROM child_mortality cm
+JOIN country c ON cm.country = c.country 
+WHERE cm.ref_year = 2010 
+GROUP BY c.wb_regions
+ORDER BY avg_deaths < 20; 
+
+SELECT (c.wb_regions) , AVG(cm.tot_deaths) AS avg_deaths
+FROM child_mortality cm
+JOIN country c ON cm.country = c.country
+WHERE ref_year = 2010
+
+---Gabarito:
+
+SELECT le.ref_year, 
+	MIN (le.tot_years) AS min_years, 
+	AVG (le.tot_years) AS avg_years 
+	MAX (le.tot_years) AS max_years
+FROM life_expectancy le
+JOIN country c ON le.country = c.country 
+WHERE le.ref_year IN ( 1990, 2000, 2010, 2020) 
+	AND c.rwb_regions = 'Latin America & Caribbean'
+GROUP BY le.ref_year
+ORDER BY le.ref_year;
+
+SELECT c.wb4income ,
+            ROUND(AVG(gp.gdp_pc), 2) AS avg_gdp_pc, 
+            ROUND(AVG(ai.mean_usd), 2) AS avg_mean_usd
+FROM gdp_pc gp
+JOIN avg_income ai ON gp.country = ai.country
+AND gp.ref_year = ai.ref_year
+JOIN country c ON gp.country = c.country 
+WHERE gp.ref_year = 2019
+GROUP BY c.wb4income 
+ORDER BY avg_gdp_pc;
+
+SELECT c.wb4income, 
+	AVG (m.mean_years- w.mean_years) AS avg_diff
+FROM men_years_at_school m
+JOIN women_years_at_school w ON m.country = w.country 
+	AND m.ref_year = w.ref_year
+JOIN country c ON m.country = w.country 
+WHERE w.ref_year = 2000
+GROUP BY c.wb4income
+ORDER BY avg_diff;
+
+SELECT c.wb_regions , 
+	AVG (m.mean_years- w.mean_years) AS avg_diff
+FROM men_years_at_school m
+JOIN women_years_at_school w ON m.country = w.country 
+	AND m.ref_year = w.ref_year
+JOIN country c ON m.country = w.country 
+WHERE w.ref_year = 2000
+GROUP BY c.wb_regions
+ORDER BY avg_diff;
+
+
+
+
+
+
 
